@@ -2,7 +2,8 @@
   user-select: none;
 
   --color-primary: #0066ff;
-  --color-secondary: #0047b3; 
+  --color-secondary: #0047b3;
+  --color-tertiary: #e6f0ff;
 
   --color-text-primary: black;
   --color-text-secondary: white;

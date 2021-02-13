@@ -20,11 +20,41 @@ const Title = styled.p`
     margin-left: 55px;
 `;
 
+const SearchBar = styled.input`
+    font-size: 16px;
+    background-color: white;
+    color: var(--color-secondary);
+    border-radius: 5px;
+    border: none;
+    width: 400px;
+    height: 20px;
+    padding: 5px;
+    margin: 10px;
+    margin-left: calc(50% - 450px);
+`;
+
 class Navbar extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            searchValue: ""
+        }
+    }
+
+
     render(){
         return (
             <Container>
                 <Title>C19Dashboard</Title>
+                <SearchBar 
+                    type="text" 
+                    placeholder="Search for a country..."
+                    onKeyPress={event => {
+                        if(event.key === 'Enter'){
+                            this.props.fetchCountry(event.target.value)
+                        }
+                    }}
+                />
             </Container>
         )
     }

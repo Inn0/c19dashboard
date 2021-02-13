@@ -36,6 +36,7 @@ const GridItem = styled.div`
     border-left: 5px solid var(--color-primary);
 
     &:hover {
+        background-color: var(--color-tertiary);
         box-shadow: none;
         transition: 0.3s;
     }
@@ -62,11 +63,22 @@ class Home extends React.Component {
         })
     }
 
+    //TODO: make this functionality show a seperate page or popup with information on one specific country
+    fetchCountryData = (countryName)  => {
+        fetch('https://covid-api.mmediagroup.fr/v1/cases?country='+countryName)
+        .then(res => res.json())
+        .then(res => {
+            console.log(Object.values(res))
+            this.setState({countries: Object.values(res)})
+        })
+    }
+
     render () {
         return(
             <Page>
-                <Navbar />
+                <Navbar fetchCountry={this.fetchCountryData}/>
                 <Container>
+                    {/* TODO: Convert these cards to a seperate component */}
                     {this.state.countries.map((country) => {
                         return <GridItem>
                                 {country.All.country}<br />
