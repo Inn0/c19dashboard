@@ -17,7 +17,7 @@ const Title = styled.p`
     font-size: 30px;
     color: var(--color-text-secondary);
     margin: 5px;
-    margin-left: 55px;
+    margin-left: 10px;
 `;
 
 const SearchBar = styled.input`
@@ -30,7 +30,6 @@ const SearchBar = styled.input`
     height: 20px;
     padding: 5px;
     margin: 10px;
-    margin-left: calc(50% - 450px);
 `;
 
 class Navbar extends React.Component {

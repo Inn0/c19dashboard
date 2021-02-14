@@ -8,69 +8,81 @@ const Page = styled.div`
 `;
 
 const Container = styled.div`
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    padding: 50px;
+    display: flex;
+    flex-direction: column;
     margin-top: 50px;
-    grid-gap: 20px;
-
-    @media (max-width: 1600px){
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    @media (max-width: 1280px){
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    @media (max-width: 768px){
-        grid-template-columns: repeat(1, minmax(0, 1fr));
-    }
+    width: 70vw;
+    margin-left: 15vw;
+    margin-right: 15vw;
+    min-height: 100px;
+    background-color: #f2f2f2;
 `;
 
-const GridItem = styled.div`
+const Title = styled.p`
     background-color: white;
-    border-radius: 5px;
-    padding: 10px;
-    min-height: 150px;
-    box-shadow: 6px 6px 6px 0 var(--color-box-shadow);
     border-left: 5px solid var(--color-primary);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 4px 4px 4px var(--color-box-shadow);
+    font-size: 32px;
+`;
 
-    &:hover {
-        background-color: var(--color-tertiary);
-        box-shadow: none;
-        transition: 0.3s;
-    }
+const Body = styled.div`
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-left: 5px solid var(--color-primary);
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 24px;
+    box-shadow: 4px 4px 4px var(--color-box-shadow);
+`;
+
+const StatTitle = styled.p`
+    font-weight: 550;
+    width: 275px;
+    margin: 0;
+`;
+
+const StatText = styled.p`
+    margin: 0;
+`;
+
+const StatRow = styled.div`
+    display: flex;
+    flex-direction: row;    
 `;
 
 class Home extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            countries: []
+            loading: true,
+            data: {}
         }
     }
 
     componentDidMount(){
-        this.fetchAllCountryData();
+        this.fetchCountryData("netherlands");
     }
 
-    fetchAllCountryData(){
-        fetch('https://covid-api.mmediagroup.fr/v1/cases')
-        .then(res => res.json())
-        .then(res => {
-            console.log(Object.values(res))
-            this.setState({countries: Object.values(res)})
-        })
-    }
-
-    //TODO: make this functionality show a seperate page or popup with information on one specific country
     fetchCountryData = (countryName)  => {
+        countryName = countryName.charAt(0).toUpperCase() + countryName.slice(1);
         fetch('https://covid-api.mmediagroup.fr/v1/cases?country='+countryName)
         .then(res => res.json())
         .then(res => {
-            console.log(Object.values(res))
-            this.setState({countries: Object.values(res)})
+            if(res.All == undefined){
+                alert('Country not found!');
+            } else {
+                this.setState({ loading: false, data: res })
+                console.log(this.state.data)
+            }
         })
+    }
+
+    calcPercentage(part, total){
+        var perc = part / total * 100;
+        return perc.toFixed(3)
     }
 
     render () {
@@ -78,15 +90,37 @@ class Home extends React.Component {
             <Page>
                 <Navbar fetchCountry={this.fetchCountryData}/>
                 <Container>
-                    {/* TODO: Convert these cards to a seperate component */}
-                    {this.state.countries.map((country) => {
-                        return <GridItem>
-                                {country.All.country}<br />
-                                Confirmed: {country.All.confirmed}<br />
-                                Recovered: {country.All.recovered}<br />
-                                Percentage: {((country.All.confirmed / country.All.population) * 100).toFixed(3)}%
-                                </GridItem>
-                    })}
+                    {this.state.loading ? <p>Loading...</p> : 
+                        <div>
+                            <Title>{this.state.data.All.country} ({this.state.data.All.continent})</Title>
+                            <Body>
+                                <StatRow>
+                                    <StatTitle>Confirmed cases:</StatTitle>
+                                    <StatText>{this.state.data.All.confirmed}</StatText>
+                                </StatRow>
+                                <StatRow>
+                                    <StatTitle>Recovered patients:</StatTitle>
+                                    <StatText>{this.state.data.All.recovered}</StatText>
+                                </StatRow>
+                                <StatRow>
+                                    <StatTitle>Deaths:</StatTitle>
+                                    <StatText>{this.state.data.All.deaths}</StatText>
+                                </StatRow>          
+                                <StatRow>
+                                    <StatTitle>Percentage confirmed:</StatTitle>
+                                    <StatText>{this.calcPercentage(this.state.data.All.confirmed, this.state.data.All.population)}</StatText>
+                                </StatRow>   
+                                <StatRow>
+                                    <StatTitle>Percentage recovered:</StatTitle>
+                                    <StatText>{this.calcPercentage(this.state.data.All.recovered, this.state.data.All.population)}</StatText>
+                                </StatRow>
+                                <StatRow>
+                                    <StatTitle>Percentage passed:</StatTitle>
+                                    <StatText>{this.calcPercentage(this.state.data.All.deaths, this.state.data.All.population)}</StatText>
+                                </StatRow>              
+                            </Body>
+                        </div>
+                    }
                 </Container>
             </Page>
         )
