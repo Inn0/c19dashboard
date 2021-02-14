@@ -1,10 +1,15 @@
 import React from 'react';
 import Navbar from './navbar';
 import styled from 'styled-components';
+import { PieChart } from 'react-minimal-pie-chart';
 
 const Page = styled.div`
     background-color: #f2f2f2;
     min-height: calc(100vh - 50px);
+
+    @media screen and (max-width: 768px){
+        min-height: calc(100vh - 100px);
+    }
 `;
 
 const Container = styled.div`
@@ -16,6 +21,13 @@ const Container = styled.div`
     margin-right: 15vw;
     min-height: 100px;
     background-color: #f2f2f2;
+
+    @media screen and (max-width: 768px){
+        width: 95vw;
+        margin-left: 2.5vw;
+        margin-right: 2.5vw;
+        margin-top: 100px;
+    }
 `;
 
 const Title = styled.p`
@@ -29,13 +41,17 @@ const Title = styled.p`
 
 const Body = styled.div`
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     background-color: white;
     border-left: 5px solid var(--color-primary);
     padding: 10px;
     border-radius: 5px;
     font-size: 24px;
     box-shadow: 4px 4px 4px var(--color-box-shadow);
+
+    @media screen and (max-width: 768px){
+        flex-direction: column;
+    }
 `;
 
 const StatTitle = styled.p`
@@ -51,6 +67,24 @@ const StatText = styled.p`
 const StatRow = styled.div`
     display: flex;
     flex-direction: row;    
+`;
+
+const Chart = styled(PieChart)`
+    width: 15%;
+    min-width: 200px;
+
+    @media screen and (max-width: 768px){
+        padding: 10px;
+        width: 60%;
+        margin-left: calc(20% - 15px);
+        margin-right: 20%;
+    }
+`;
+
+const Stats = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 85%;
 `;
 
 class Home extends React.Component {
@@ -94,30 +128,40 @@ class Home extends React.Component {
                         <div>
                             <Title>{this.state.data.All.country} ({this.state.data.All.continent})</Title>
                             <Body>
-                                <StatRow>
-                                    <StatTitle>Confirmed cases:</StatTitle>
-                                    <StatText>{this.state.data.All.confirmed}</StatText>
-                                </StatRow>
-                                <StatRow>
-                                    <StatTitle>Recovered patients:</StatTitle>
-                                    <StatText>{this.state.data.All.recovered}</StatText>
-                                </StatRow>
-                                <StatRow>
-                                    <StatTitle>Deaths:</StatTitle>
-                                    <StatText>{this.state.data.All.deaths}</StatText>
-                                </StatRow>          
-                                <StatRow>
-                                    <StatTitle>Percentage confirmed:</StatTitle>
-                                    <StatText>{this.calcPercentage(this.state.data.All.confirmed, this.state.data.All.population)}</StatText>
-                                </StatRow>   
-                                <StatRow>
-                                    <StatTitle>Percentage recovered:</StatTitle>
-                                    <StatText>{this.calcPercentage(this.state.data.All.recovered, this.state.data.All.population)}</StatText>
-                                </StatRow>
-                                <StatRow>
-                                    <StatTitle>Percentage passed:</StatTitle>
-                                    <StatText>{this.calcPercentage(this.state.data.All.deaths, this.state.data.All.population)}</StatText>
-                                </StatRow>              
+                                <Stats>
+                                    <StatRow>
+                                        <StatTitle>Confirmed cases:</StatTitle>
+                                        <StatText>{this.state.data.All.confirmed}</StatText>
+                                    </StatRow>
+                                    <StatRow>
+                                        <StatTitle>Recovered patients:</StatTitle>
+                                        <StatText>{this.state.data.All.recovered}</StatText>
+                                    </StatRow>
+                                    <StatRow>
+                                        <StatTitle>Deaths:</StatTitle>
+                                        <StatText>{this.state.data.All.deaths}</StatText>
+                                    </StatRow>          
+                                    <StatRow>
+                                        <StatTitle>Percentage confirmed:</StatTitle>
+                                        <StatText>{this.calcPercentage(this.state.data.All.confirmed, this.state.data.All.population)}</StatText>
+                                    </StatRow>   
+                                    <StatRow>
+                                        <StatTitle>Percentage recovered:</StatTitle>
+                                        <StatText>{this.calcPercentage(this.state.data.All.recovered, this.state.data.All.population)}</StatText>
+                                    </StatRow>
+                                    <StatRow>
+                                        <StatTitle>Percentage passed:</StatTitle>
+                                        <StatText>{this.calcPercentage(this.state.data.All.deaths, this.state.data.All.population)}</StatText>
+                                    </StatRow>
+                                </Stats>
+                                
+                                <Chart
+                                    data={[
+                                        {title: 'Confirmed', value: this.state.data.All.confirmed, color: 'orange'},
+                                        {title: 'Recovered', value: this.state.data.All.recovered, color: 'green'},
+                                        {title: 'Deaths', value: this.state.data.All.recovered, color: 'red'}
+                                    ]}
+                                />
                             </Body>
                         </div>
                     }

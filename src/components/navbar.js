@@ -11,6 +11,11 @@ const Container = styled.div`
     position: fixed;
     top: 0;
     z-index: 100;
+
+    @media screen and (max-width: 768px){
+        flex-direction: column;
+        height: 100px;
+    }
 `;
 
 const Title = styled.p`
@@ -30,6 +35,9 @@ const SearchBar = styled.input`
     height: 20px;
     padding: 5px;
     margin: 10px;
+    @media screen and (max-width: 768px){
+        width: calc(100% - 30px)
+    }
 `;
 
 class Navbar extends React.Component {
