@@ -22,10 +22,13 @@ const Container = styled.div`
     min-height: 100px;
     background-color: #f2f2f2;
 
-    @media screen and (max-width: 768px){
+    @media screen and (max-width: 1600px){
         width: 95vw;
         margin-left: 2.5vw;
         margin-right: 2.5vw;
+    }
+
+    @media screen and (max-width: 768px){
         margin-top: 100px;
     }
 `;
@@ -39,12 +42,12 @@ const Title = styled.p`
     font-size: 32px;
 `;
 
+
 const Body = styled.div`
     display: flex;
     flex-direction: row;
     background-color: white;
-    border-left: 5px solid var(--color-primary);
-    padding: 10px;
+    padding: 15px;
     border-radius: 5px;
     font-size: 24px;
     box-shadow: 4px 4px 4px var(--color-box-shadow);
@@ -54,9 +57,17 @@ const Body = styled.div`
     }
 `;
 
+const StatHeader = styled.p`
+    font-weight: 550;
+    font-size: 28px;
+    width: 390px;
+    margin: 0;
+    color: var(--color-primary)
+`;
+
 const StatTitle = styled.p`
     font-weight: 550;
-    width: 275px;
+    width: 390px;
     margin: 0;
 `;
 
@@ -72,6 +83,8 @@ const StatRow = styled.div`
 const Chart = styled(PieChart)`
     width: 15%;
     min-width: 200px;
+    max-width: 300px;
+    margin-top: 10px;
 
     @media screen and (max-width: 768px){
         padding: 10px;
@@ -85,6 +98,11 @@ const Stats = styled.div`
     display: flex;
     flex-direction: column;
     width: 85%;
+`;
+
+const Divider = styled.div`
+    width: 100%;
+    height: 10px;
 `;
 
 class Home extends React.Component {
@@ -126,9 +144,10 @@ class Home extends React.Component {
                 <Container>
                     {this.state.loading ? <p>Loading...</p> : 
                         <div>
-                            <Title>{this.state.data.All.country} ({this.state.data.All.continent})</Title>
+                            <Title>{this.state.data.All.country} ({this.state.data.All.location})</Title>
                             <Body>
                                 <Stats>
+                                    <StatHeader>Covid Statistics</StatHeader>
                                     <StatRow>
                                         <StatTitle>Confirmed cases:</StatTitle>
                                         <StatText>{this.state.data.All.confirmed}</StatText>
@@ -140,27 +159,53 @@ class Home extends React.Component {
                                     <StatRow>
                                         <StatTitle>Deaths:</StatTitle>
                                         <StatText>{this.state.data.All.deaths}</StatText>
-                                    </StatRow>          
+                                    </StatRow>
+                                    <StatRow>
+                                        <StatTitle>Confirmed per 100k:</StatTitle>
+                                        <StatText>{((this.state.data.All.confirmed / this.state.data.All.population) * 100000).toFixed(0)}</StatText>
+                                    </StatRow>
+
+                                    <Divider />    
+                                    
+                                    <StatHeader>Information</StatHeader>
+                                    <StatRow>
+                                        <StatTitle>Population per square kilometer:</StatTitle>
+                                        <StatText>{(this.state.data.All.population / this.state.data.All.sq_km_area).toFixed(2)}</StatText>
+                                    </StatRow>
+                                    <StatRow>
+                                        <StatTitle>Capital:</StatTitle>
+                                        <StatText>{this.state.data.All.capital_city}</StatText>
+                                    </StatRow>
+                                    <StatRow>
+                                        <StatTitle>Life expectancy:</StatTitle>
+                                        <StatText>{this.state.data.All.life_expectancy}</StatText>
+                                    </StatRow>
+
+                                    <Divider />
+
+                                    <StatHeader>Percentages</StatHeader>
                                     <StatRow>
                                         <StatTitle>Percentage confirmed:</StatTitle>
-                                        <StatText>{this.calcPercentage(this.state.data.All.confirmed, this.state.data.All.population)}</StatText>
+                                        <StatText>{this.calcPercentage(this.state.data.All.confirmed, this.state.data.All.population)}%</StatText>
                                     </StatRow>   
                                     <StatRow>
                                         <StatTitle>Percentage recovered:</StatTitle>
-                                        <StatText>{this.calcPercentage(this.state.data.All.recovered, this.state.data.All.population)}</StatText>
+                                        <StatText>{this.calcPercentage(this.state.data.All.recovered, this.state.data.All.population)}%</StatText>
                                     </StatRow>
                                     <StatRow>
                                         <StatTitle>Percentage passed:</StatTitle>
-                                        <StatText>{this.calcPercentage(this.state.data.All.deaths, this.state.data.All.population)}</StatText>
+                                        <StatText>{this.calcPercentage(this.state.data.All.deaths, this.state.data.All.population)}%</StatText>
                                     </StatRow>
                                 </Stats>
                                 
                                 <Chart
                                     data={[
-                                        {title: 'Confirmed', value: this.state.data.All.confirmed, color: 'orange'},
-                                        {title: 'Recovered', value: this.state.data.All.recovered, color: 'green'},
-                                        {title: 'Deaths', value: this.state.data.All.recovered, color: 'red'}
+                                        {title: 'Confirmed: '+this.state.data.All.confirmed, value: this.state.data.All.confirmed, color: 'orange'},
+                                        {title: 'Recovered: '+this.state.data.All.recovered, value: this.state.data.All.recovered, color: 'green'},
+                                        {title: 'Deaths: '+this.state.data.All.deaths, value: this.state.data.All.deaths, color: 'red'}
                                     ]}
+                                    lineWidth="70"
+                                    paddingAngle='1'
                                 />
                             </Body>
                         </div>
