@@ -60,7 +60,6 @@ const Body = styled.div`
 const StatHeader = styled.p`
     font-weight: 550;
     font-size: 28px;
-    width: 390px;
     margin: 0;
     color: var(--color-primary)
 `;
@@ -78,6 +77,7 @@ const StatText = styled.p`
 const StatRow = styled.div`
     display: flex;
     flex-direction: row;    
+    width: 88vw;
 `;
 
 const Chart = styled(PieChart)`
